@@ -13,6 +13,4 @@ Features provided are:
 
 The library does not have any dependencies on third party libraries and is provided under a BSD licence.
 
-Sudhir Shenoy
-
-July, 2017
+*The version currently uploaded is missing all the business date functions but is otherwise usable.*
