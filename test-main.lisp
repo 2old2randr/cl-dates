@@ -77,11 +77,13 @@
 	(*failed-tests* 0)
 	(*verbose-results* verbose)
 	(status (combine-results
-		 (julian)
-		 (misc-fns)
-		 (special-dates)
-		 (print-fns)
-		 (parse-dates))))
+		  (julian)
+		  (misc-fns)
+		  (special-dates)
+		  (date-arith-360)
+		  (date-arith-act-act)
+		  (print-fns)
+		  (parse-dates))))
     (unless (zerop *total-tests*)
       (format t "~d tests executed - ~d passed (~,2f%)~%"
 	      *total-tests* (- *total-tests* *failed-tests*)
