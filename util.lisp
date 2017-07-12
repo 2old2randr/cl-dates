@@ -47,6 +47,12 @@
 				     'double-float)))
 		     (parse-error () nil)))))))))
 
+(defun leap-year-p (year)
+  "True if given year is a leap year"
+  (if (zerop (mod year 100))
+      (zerop (mod year 400))
+      (zerop (mod year 4))))
+
 (defun hms->day-fraction (hh mm ss)
   (/ (+ (* hh 3600) (* mm 60) ss) 86400))
 
