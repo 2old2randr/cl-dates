@@ -34,7 +34,7 @@
    :ymd->date				; date from y/m/d/h/m/s components
    :string->date			; date from string
    :todays-date				; system date
-   :todays-datetime			; system date-time
+   :todays-datetime			; system date and time
    ;; Date converters
    :date->ymd				; to components
    :date->string			; to string
@@ -54,25 +54,20 @@
    :valid-time-p
    :jday-number				; Julian day number
    :day-of-week				; Day of week for date
+   :leap-year-p
    ;; Comparisons
    :date= :date/=
    :date< :date<=
    :date> :date>=
    ;; Calendar date arithmetic
-   :date+ :date-	    ; add/subtract days to date
-   :date-diff		    ; days between two dates
    :nth-day-of-week	    ; 'n' weeks offset from start of month
    :first-of-next-month	    ; first day of next month
    :last-day-of-month	    ; last calendar day in month
    :last-day-of-prev-month  ; last calendar day in previous month
-   ;; Business date arithmetic
-   ;; :previous-workday	    ; last working day before date (which can be a holiday)
-   ;; :next-workday	    ; next working day after date (which can be a holiday)
-   ;; :bdate+ :bdate-	    ; add/subtract working days to date
-   ;; :add-calendar-months	    ; add/subtract months obeying day count conventions
-   ;; :add-months	   	    ; add/subtract months obeying day count conventions
-   ;; :last-workday-of-month   ; Last working day in month
-   ;; :generate-date-series    ; Series of coupon dates following day conventions
+   :date+ :date-	    ; add/subtract days to date
+   :add-months		    ; add/subtract months to date
+   :diff-days		    ; absolute number of days between two dates
+   :diff-years		    ; years between dates using day count conventions
    ))
 
    
