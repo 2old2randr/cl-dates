@@ -57,10 +57,10 @@ or a numeric offset in fractions of an hour e.g., +5.5"
 	 (offset (zone-to-offset zone)))
     (- jdate (/ offset 24))))
 
-(defun date->ymd (date)
-  "Returns 6 values corresponding to the given datetime-
-year, month, day, hour, minute, second. Second may be a floating
-point value but the first five are aways integers"
+(defun date->ymd (date &key (want-time nil))
+  "Returns 6 values if :want-time is true: year, month, day, hour, minute, second.
+Second may be a floating point value but the first five are aways integers.
+If :want-time is NIL, returns year, month and day as integers."
   (let* ((jd (jday-number date))
 	 (e (floor (/ (- jd 1867216.25d0) 36524.25d0)))
 	 (f (+ 1 jd e (- (floor (/ e 4)))))
@@ -70,20 +70,21 @@ point value but the first five are aways integers"
 	 (j (floor (/ (- g i) 30.6001d0)))
 	 (dd (- g i (floor (* j 30.6001d0))))
 	 (mm (- j (* 12 (floor (/ j 14))) 1))
-	 (yy (+ h (floor (* 1/12 (- 14 mm))) -4716))
-	 (day-frac (multiple-value-bind (day frac) (truncate date)
-		     (declare (ignore day))
-		     (if (>= frac 0.5d0)
-			 ;; midnight to noon
-			 (- frac 0.5d0)
-			 (+ frac 0.5d0)))))
-    (multiple-value-bind (h m s) (day-fraction->hms day-frac)
-      (values yy mm dd h m s))))
+	 (yy (+ h (floor (* 1/12 (- 14 mm))) -4716)))
+    (if want-time
+	(let ((day-frac (multiple-value-bind (day frac) (truncate date)
+			  (declare (ignore day))
+			  (if (>= frac 0.5d0)
+			      ;; midnight to noon
+			      (- frac 0.5d0)
+			      (+ frac 0.5d0)))))
+	  (multiple-value-bind (h m s) (day-fraction->hms day-frac)
+	    (values yy mm dd h m s)))
+	(values yy mm dd))))
 
 (defun valid-date-p (yy mm dd)
   "Check that year, month and day form a valid calendar date"
-  (multiple-value-bind (y m d hr mn sc) (date->ymd (ymd->date yy mm dd))
-    (declare (ignore hr mn sc))
+  (multiple-value-bind (y m d) (date->ymd (ymd->date yy mm dd))
     (and (= yy y) (= mm m) (= dd d))))
 
 (defun valid-time-p (h m s)
@@ -198,7 +199,7 @@ it returns year, month, day, hour, minute and second as 6 values"
 		     (t (error "Invalid param which: ~a" which)))))
     (setf date (apply-correction-factors yy date))
     (if want-gregorian-date
-	(date->ymd date)
+	(date->ymd date :want-time t)
 	date)))
 
 (defun cos-degrees (deg)

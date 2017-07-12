@@ -40,7 +40,7 @@ The :human format is the same as :iso-8601 except that the separators between da
 time and timezone are spaces to make it more readable to the human eye."
   (let ((offset (zone-to-offset zone)))
     (incf date (/ offset 24))
-    (multiple-value-bind (yy mm dd h m s) (date->ymd date)
+    (multiple-value-bind (yy mm dd h m s) (date->ymd date :want-time t)
       (let ((year (format nil "~d" yy))
 	    (month (case format
 		     ((:asctime :rfc-822 :rfc-850) (three-letter-month mm))
@@ -61,7 +61,7 @@ e.g., \"Thursday, 6 July 2017, 09:38:43.567 +0900\".
 If :date-only is true, the time and timezone are omitted."
   (let ((offset (zone-to-offset zone)))
     (incf date (/ offset 24))
-    (multiple-value-bind (yy mm dd h m s) (date->ymd date)
+    (multiple-value-bind (yy mm dd h m s) (date->ymd date :want-time t)
       (if date-only
 	  (format nil "~a, ~d ~a ~d" (dow->string (day-of-week date))
 		  dd (month->string mm) yy)

@@ -418,7 +418,7 @@
 	    ((setf tmp (str-to-relative-date token))
 	     (when (/= 0 num-date-comps)
 	       (return-from string->date nil))
-	     (multiple-value-bind (yy mm dd h m s) (date->ymd (+ reference-date tmp))
+	     (multiple-value-bind (yy mm dd h m s) (date->ymd (+ reference-date tmp) :want-time t)
 	       (setf (dt-yr res) yy
 		     (dt-mth res) mm
 		     (dt-day res) dd
@@ -568,7 +568,7 @@
       (when (dt-yr res)
 	(setf (dt-yr res) (make-four-digit-year (dt-yr res))))
       ;; copy all missing values from the reference date
-      (multiple-value-bind (yy mm dd h m s) (date->ymd reference-date)
+      (multiple-value-bind (yy mm dd h m s) (date->ymd reference-date :want-time t)
 	(when-null-set res dt-yr yy)
 	(when-null-set res dt-mth mm)
 	(when-null-set res dt-day dd)
