@@ -121,3 +121,26 @@
 (defparameter +date-words+ '(("today" . 0) ("tomorrow" . 1) ("yesterday" . -1)))
 (defun str-to-relative-date (str)
   (cdr (find str +date-words+ :test #'string-equal :key #'car)))
+
+(defun day-count->string (day-count-convention)
+  (case day-count-convention
+    ((:actual-actual-fixed :act-act-fixed) "Actual/Actual (Fixed)")
+    ((:actual-actual :act-act :actual-365 :act-365) "Actual/Actual (ISDA)")
+    ((:actual-actual-isma :act-act-isma) "Actual/Actual (ISMA)")
+    ((:actual-actual-afb :act-act-afb)  "Actual/Actual (AFB)")
+    ((:actual-365-l :act-365-l) "Actual/365L")
+    ((:actual-365-nl :act-365-nl :nl-365 :actual-365-jgb :act-365-jgb) "NL/365")
+    ((:actual-360 :act-360) "Actual/360")
+    ((:30a-360 :30-360-isda :30-360-muni :bond-basis :360-360) "30A/360")
+    ((:30e-360 :30-360-isma) "30E/360")
+    (:30e+-360 "30E+/360")
+    ((:30e-360-isda :30-360-german) "30/360 (German)")
+    ((:30u-360 :30-360-us) "30/360 (US)")
+    (otherwise (concatenate 'string "Unknown day count convention: " (string day-count-convention)))))
+  
+
+(defun eom-rule->string (rule)
+  (case rule
+    (:eom-normal "EOM")
+    (:eom-no-leap-day "EOM (No Leap)")
+    (otherwise "")))

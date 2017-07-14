@@ -43,6 +43,8 @@
    :date->local-time			; to local time zone
    :month->string			; full name of month
    :dow->string				; day of week as string
+   :day-count->string
+   :eom-rule->string
    ;; Special dates for given year
    :easter-day				; easter day
    :vernal-equinox			; spring equinox date-time
@@ -66,8 +68,7 @@
    :last-day-of-prev-month  ; last calendar day in previous month
    :date+ :date-	    ; add/subtract days to date
    :add-months		    ; add/subtract months to date
+   :add-years		    ; convenience function
    :diff-days		    ; absolute number of days between two dates
    :diff-years		    ; years between dates using day count conventions
    ))
-
-   
