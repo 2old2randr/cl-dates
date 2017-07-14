@@ -47,6 +47,7 @@
    cases."
   `(defun ,name ,parameters
      (let ((*test-name* (append *test-name* (list ',name))))
+       (format t "~a ... from test #~d~%" *test-name* (1+ *total-tests*))
        ,@body)))
 
 (defmacro check (&body forms)
@@ -54,12 +55,9 @@
   `(combine-results
     ,@(loop for f in forms collect `(report-result ,f ',f))))
 
-(defmacro combine-results (&body forms)
-  "Combine the results (as booleans) of evaluating 'forms' in order."
-  (let ((result (gensym)))
-    `(let ((,result t))
-       ,@(loop for f in forms collect `(unless ,f (setf ,result nil)))
-       ,result)))
+(defun combine-results (&rest exprs)
+  "Combine the results (as booleans) of evaluating 'exprs' in order."
+  (every #'identity exprs))
 
 (defun report-result (result form)
   "Report the results of a single test case. Called by 'check'."
@@ -67,19 +65,20 @@
   (when (not result)
     (incf *failed-tests*))
   (if *verbose-results*
-      (format t "~:[FAIL~;pass~] ... ~a: ~a~%" result *test-name* form)
+      (format t "#~d: ~:[FAIL~;pass~] ... ~a: ~a~%" *total-tests* result *test-name* form)
       (when (not result)
-	(format t "FAIL ... ~a: ~a~%" *test-name* form)))
+	(format t "#~d: FAIL ... ~a: ~a~%" *total-tests* *test-name* form)))
   result)
 
 (defun run-all-tests (&key (verbose nil))
-  (let ((*total-tests* 0)
-	(*failed-tests* 0)
-	(*verbose-results* verbose)
-	(status (combine-results
+  (let* ((*total-tests* 0)
+	 (*failed-tests* 0)
+	 (*verbose-results* verbose)
+	 (status (combine-results
 		  (julian)
 		  (misc-fns)
 		  (special-dates)
+		  (date-arith)
 		  (date-arith-360)
 		  (date-arith-act-act)
 		  (print-fns)

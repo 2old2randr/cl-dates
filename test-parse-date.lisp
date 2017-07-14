@@ -33,7 +33,6 @@
   (< (abs (- a b)) +max-error+))
 
 (deftest parse-dates ()
-  (format t "Parse dates from strings ...~%")
   (let ((dt (ymd->date 2003 9 25 1 36 28)))
     (check
       ;; Fully specified date with time and timezone
@@ -200,4 +199,8 @@
       (= (string->date "01h02s" :reference-date dt) (ymd->date 2003 9 25 1 36 2))
       (= (string->date "01m02" :reference-date dt) (ymd->date 2003 9 25 1 1 2))
       (a= (string->date "01m02h" :reference-date dt) (ymd->date 2003 9 25 2 1 28))
-      (= (string->date "2004 10 April 11h30m" :reference-date dt) (ymd->date 2004 4 10 11 30 28)))))
+      (= (string->date "2004 10 April 11h30m" :reference-date dt) (ymd->date 2004 4 10 11 30 28))
+      ;; The next one works coincidentally because Japanese uses a y/m/d format by default.
+      ;; However, it demonstrates that as long as date components are present, the presence
+      ;; of extraneous characters does not matter
+      (= (string->date "2004年8月9日") (ymd->date 2004 8 9)))))
