@@ -92,6 +92,10 @@ the month is returned."
   "Retreat date by given number of days"
   (- date days))
 
+(defun add-years (date years &key eom-rule)
+  "Add number of years to date (subtract if negative) - see add-months"
+  (add-months date (* 12 years) :eom-rule eom-rule))
+
 (defun add-months (date months &key eom-rule)
   "Add number of months to date (negative number will decrement date).
 The returned date will have the same day as the given date unless that is not a valid
@@ -291,4 +295,3 @@ Supported day conventions are:
 	 (when (= d1 31)
 	   (setf d1 30))
 	 (/ (+ (- d2 d1) (* 30 (- m2 m1)) (* 360 (- y2 y1))) 360))))))
-
