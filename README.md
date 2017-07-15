@@ -47,10 +47,21 @@ in this case) and ignore the time.
   the last day of a month, last day of the previous month, Nth day of
   week in a month (e.g., 3rd Wednesday), etc.
 
+All functions are provided in the CL-DATES package. A nickname "DT" is
+defined to reduce typing if the symbols are not imported.
+
 ## Dependencies
 
 The only dependency is on the Common Lisp package. There are no third
 party library dependencies.
+
+## Test Suite
+
+Test cases are in _test-*.lisp_. To run, load the *cl-dates-test* package
+and run **cl-dates-test:run-all-tests**.
+
+The library has been tested with CCL on Mac OS X and Windows and SBCL on Mac
+OS X. The code is portable and should run on any Common Lisp environment. 
 
 ## License
 
