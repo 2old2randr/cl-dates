@@ -26,7 +26,7 @@ in this case) and ignore the time.
   are acceptable.
 
 - Dates can be *converted to a string* in several formats including
-  ISO 8601 and RFC 822 using the function **string->date**.
+  ISO 8601 and RFC 822 using the function **date->string**.
 
 - Functions are provided to calculate *astronomical dates* for any
   given year (**easter-day**, **vernal-equinox**,
