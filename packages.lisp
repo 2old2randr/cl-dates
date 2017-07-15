@@ -43,8 +43,8 @@
    :date->local-time			; to local time zone
    :month->string			; full name of month
    :dow->string				; day of week as string
-   :day-count->string
-   :eom-rule->string
+   :day-count->string			; day-count convention as string
+   :eom-rule->string			; end of month rule as string
    ;; Special dates for given year
    :easter-day				; easter day
    :vernal-equinox			; spring equinox date-time

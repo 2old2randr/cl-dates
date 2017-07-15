@@ -24,6 +24,18 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;
+;; Contains a string to date-time converter that accurately parses most common
+;; ways of writing dates. See test-parse-dates.lisp for examples.
+;;
+;; Only the string->date function is exported from this file - all other functions
+;; are simply supporting functions for string->date and are not meant to be used
+;; elsewhere.
+;;
+;; The code is largely based on the Python dateutils library but there are some
+;; differences and optimizations
+;;
+
 (in-package :cl-dates)
 
 (defparameter +white-space+ '(#\space #\tab #\return #\linefeed #\newline))
@@ -205,7 +217,48 @@
 
 (defparameter +date-separators+ '("." "/" "-"))
 
-(defun string->date (string &key (reference-date (todays-date)) (precedence :ymd))
+(defparameter +time-suffixes+ '((:hour . ("h" "hr" "hrs" "hour" "hours"))
+				(:minute . ("m" "min" "mins" "minute" "minutes"))
+				(:second . ("s" "sec" "secs" "second" "seconds"))))
+(defun str-to-hms (str)
+  "Interpret string as hour / minute / second"
+  (loop for i from 0 below 3
+	do (let ((list (elt +time-suffixes+ i)))
+	     (when (member str (cdr list) :test #'string-equal)
+	       (return-from str-to-hms (car list))))))
+
+(defun str-to-ampm (str)
+  "Interpret string as AM / PM"
+  (cond ((member str '("a.m." "a.m" "am" "morning") :test #'string-equal) :am)
+	((member str '("p.m." "p.m" "pm" "evening" "afternoon") :test #'string-equal) :pm)
+	(t nil)))
+
+(defun str-is-day-suffix (str)
+  "Return true if string is a suffix for a number"
+  (not (null (member str '("st" "nd" "rd" "th") :test #'string-equal))))
+
+(defun str-to-relative-dow (str)
+  (cond ((member str '("last" "prev" "previous") :test #'string-equal) :prev)
+	((member str '("next" "coming") :test #'string-equal) :next)
+	((string-equal str "this") :closest)
+	(t nil)))
+
+(defparameter +date-words+ '(("today" . 0) ("tomorrow" . 1) ("yesterday" . -1)))
+(defun str-to-relative-date (str)
+  (cdr (find str +date-words+ :test #'string-equal :key #'car)))
+
+(defun string->date (string &key (reference-date (todays-datetime)) (precedence :ymd))
+  "Convert a string to a date-time if possible and return it. If parsing fails, NIL is returned.
+
+If the date and time are not fully specified, the missing components are copied from the
+given reference date (default = current system time). For example, given a string \"24 Feb\",
+the year will be set to the current year and time to the current time.
+
+Given ambiguous dates (month & day cannot be distinguished), 'precedence' is used to
+assign the month/day correctly. For US-style dates, precedence should be specified as :mdy
+and for UK style, it should be :dmy.
+
+Some special strings such as 'today', 'tomorrow', 'next Wednesday' etc are also recognized."
   (setf string (string-downcase (string-trim +white-space+ string)))
   (unless (member precedence '(:ymd :dmy :mdy))
     (error "invalid precedence ~a" precedence))

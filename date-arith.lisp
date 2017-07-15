@@ -28,21 +28,27 @@
 
 ;; Date comparisons - strip off time component
 (defun date= (&rest dates)
+  "Returns true if all dates are the same (times can be different)"
   (every (lambda (a b) (= (jday-number a) (jday-number b))) dates (cdr dates)))
 
 (defun date/= (&rest dates)
+  "Returns true if all dates are not the same (times are ignored)"
   (notevery (lambda (a b) (= (jday-number a) (jday-number b))) dates (cdr dates)))
 
 (defun date> (&rest dates)
+  "Returns true if all dates are in descending order (times are ignored)"
   (every (lambda (a b) (> (jday-number a) (jday-number b))) dates (cdr dates)))
 
 (defun date< (&rest dates)
+  "Returns true if all dates are in ascending order (times are ignored)"
   (every (lambda (a b) (< (jday-number a) (jday-number b))) dates (cdr dates)))
 
 (defun date>= (&rest dates)
+  "Returns true if all dates are in descending order or adjacent dates are the same (times are ignored)"
   (every (lambda (a b) (>= (jday-number a) (jday-number b))) dates (cdr dates)))
 
 (defun date<= (&rest dates)
+  "Returns true if all dates are in ascending order or adjacent dates are the same (times are ignored)"
   (every (lambda (a b) (<= (jday-number a) (jday-number b))) dates (cdr dates)))
 
 ;; Date arithmetic
@@ -50,7 +56,8 @@
 (defun nth-day-of-week (date dow n)
   "Returns the nth day of the week e.g., second Saturday of the month in which date falls.
 If n is large enough to make the date fall in a future month, the last valid day in
-the month is returned."
+the month is returned so setting n to a large value (> 5) will return the last relevant
+weekday in the month."
   (multiple-value-bind (yy mm dd) (date->ymd date)
     (declare (ignore dd))
     (let ((dt (loop for dd = (ymd->date yy mm 1) then (1+ dd)
@@ -67,7 +74,7 @@ the month is returned."
 		    (setf dt next-dt)))))))))
 
 (defun first-of-next-month (date)
-  "Returns date for 1st of the following month"
+  "Returns the 1st of the following month"
   (multiple-value-bind (yy mm dd) (date->ymd date)
     (declare (ignore dd))
     (if (= mm 12)
@@ -75,11 +82,11 @@ the month is returned."
 	(ymd->date yy (1+ mm) 1))))
 
 (defun last-day-of-month (date)
-  "Returns last day in curent month"
+  "Returns the last calendar day in the month in which date falls"
   (1- (first-of-next-month date)))
 
 (defun last-day-of-prev-month (date)
-  "Returns last day of previous month"
+  "Returns the last day of the previous month"
   (multiple-value-bind (yy mm dd) (date->ymd date)
     (declare (ignore dd))
     (1- (ymd->date yy mm 1))))
@@ -140,7 +147,7 @@ latter case, February 28th is considered to be the end of month even in leap yea
 The dates may be in either order and the returned value is always positive.
 
 termination-date is needed only when the day count convention is 30E/360 (ISDA) and
-the later date is the last date of February.
+the end date of the period is the last day of February.
 
 frquency is needed when the Actual/Actual (ISMA) day convention is used. In this case,
 for irregular periods, by default, it is assumed to be the front stub. If the dates are

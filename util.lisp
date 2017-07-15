@@ -54,9 +54,11 @@
       (zerop (mod year 4))))
 
 (defun hms->day-fraction (hh mm ss)
+  "Return fraction of day for given time counting up from midnight"
   (/ (+ (* hh 3600) (* mm 60) ss) 86400))
 
 (defun day-fraction->hms (day-frac)
+  "Hour, minute, seconds given day fraction (midnight = 0)"
   (let* ((secs (* day-frac 86400))
 	 (hh (floor (/ secs 3600))))
     (setf secs (- secs (* hh 3600)))
@@ -69,12 +71,15 @@
 			   (:friday . ("Fri" "Friday")) (:saturday . ("Sat" "Saturday"))
 			   (:sunday . ("Sun" "Sunday"))))
 (defun dow->string (dow)
+  "String representation of day of week"
   (third (assoc dow +weekdays+)))
 
 (defun three-letter-dow (dow)
+  "Three letter abbreviation of day of week"
   (second (assoc dow +weekdays+)))
 
 (defun str-to-weekday (str)
+  "Return weekday given string (full spelling or abbreviation"
   (loop for i from 0 below 7
 	do (let ((list (elt +weekdays+ i)))
 	     (when (member str (cdr list) :test #'string-equal)
@@ -85,44 +90,21 @@
 			 ("Sep" "September" "Sept") ("Oct" "October") ("Nov" "November")
 			 ("Dec" "December")))
 (defun month->string (mm)
+  "Month name as string given month number"
   (second (elt +months+ mm)))
 
 (defun three-letter-month (mm)
+  "Three letter month abbreviation given month number"
   (car (elt +months+ mm)))
 
 (defun str-to-month (str)
+  "Month number (1-12) given month name or abbreviation"
   (loop for i from 1 to 12
 	do (when (member str (elt +months+ i) :test #'string-equal)
 	     (return-from str-to-month i))))
 
-(defparameter +time-suffixes+ '((:hour . ("h" "hr" "hrs" "hour" "hours"))
-				(:minute . ("m" "min" "mins" "minute" "minutes"))
-				(:second . ("s" "sec" "secs" "second" "seconds"))))
-(defun str-to-hms (str)
-  (loop for i from 0 below 3
-	do (let ((list (elt +time-suffixes+ i)))
-	     (when (member str (cdr list) :test #'string-equal)
-	       (return-from str-to-hms (car list))))))
-
-(defun str-to-ampm (str)
-  (cond ((member str '("a.m." "a.m" "am" "morning") :test #'string-equal) :am)
-	((member str '("p.m." "p.m" "pm" "evening" "afternoon") :test #'string-equal) :pm)
-	(t nil)))
-
-(defun str-is-day-suffix (str)
-  (not (null (member str '("st" "nd" "rd" "th") :test #'string-equal))))
-
-(defun str-to-relative-dow (str)
-  (cond ((member str '("last" "prev" "previous") :test #'string-equal) :prev)
-	((member str '("next" "coming") :test #'string-equal) :next)
-	((string-equal str "this") :closest)
-	(t nil)))
-
-(defparameter +date-words+ '(("today" . 0) ("tomorrow" . 1) ("yesterday" . -1)))
-(defun str-to-relative-date (str)
-  (cdr (find str +date-words+ :test #'string-equal :key #'car)))
-
 (defun day-count->string (day-count-convention)
+  "Return string description of day count convention"
   (case day-count-convention
     ((:actual-actual-fixed :act-act-fixed) "Actual/Actual (Fixed)")
     ((:actual-actual :act-act :actual-365 :act-365) "Actual/Actual (ISDA)")
@@ -140,6 +122,7 @@
   
 
 (defun eom-rule->string (rule)
+  "Return string description of EOM rule"
   (case rule
     (:eom-normal "EOM")
     (:eom-no-leap-day "EOM (No Leap)")

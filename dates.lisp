@@ -27,22 +27,23 @@
 (in-package :cl-dates)
 
 (defun jday-number (date)
-  "Returns the Julian day number for the given Julian date"
+  "Returns the Julian day number for the given date-time"
   (floor (+ date 1/2)))
 
 (defparameter +days-of-week+ #(:monday :tuesday :wednesday :thursday :friday :saturday :sunday))
 (defun day-of-week (date)
-  "Returns the day of week on which the given Julian date falls"
+  "Returns the day of week on which the given date falls"
   (aref +days-of-week+ (mod (jday-number date) 7)))
 
 (defun ymd->date (yy mm dd &optional (hour 0) (min 0) (sec 0) zone)
-  "Return the Julian date corresponding to the given date and time. No
-compensation is made for the Gregorian Calendar introduction.
-Note that the Julian date is an integer when the time is noon so a
-date without time (midnight) will have a fractional part of 0.5.
+  "Return the date-time corresponding to the given date and (optionally) time.
 
-If timezone is specified, it should be either an alphabetic code e.g., \"IST\"
-or a numeric offset in fractions of an hour e.g., +5.5"
+No adjustment is made for the Gregorian Calendar introduction. Note that the
+Julian date is defined to begin at noon so a date without time (midnight) will
+have a fractional part of 0.5.
+
+If timezone is specified, it should be either an alphabetic code or numeric offset
+from UTC e.g., for Indian Standard time, it should be specified as \"IST\" or +5.5"
   (let* ((a (floor (* 1/12 (- 14 mm))))
 	 (b (- yy a))
 	 (c (floor (/ b 100)))
@@ -58,9 +59,9 @@ or a numeric offset in fractions of an hour e.g., +5.5"
     (- jdate (/ offset 24))))
 
 (defun date->ymd (date &key (want-time nil))
-  "Returns 6 values if :want-time is true: year, month, day, hour, minute, second.
-Second may be a floating point value but the first five are aways integers.
-If :want-time is NIL, returns year, month and day as integers."
+  "Returns 6 values if want-time is true: year, month, day, hour, minute, second.
+The second may be a floating point value but the first five are aways integers.
+If want-time is NIL, only three integer values are returned - year, month and day."
   (let* ((jd (jday-number date))
 	 (e (floor (/ (- jd 1867216.25d0) 36524.25d0)))
 	 (f (+ 1 jd e (- (floor (/ e 4)))))
@@ -84,8 +85,17 @@ If :want-time is NIL, returns year, month and day as integers."
 
 (defun valid-date-p (yy mm dd)
   "Check that year, month and day form a valid calendar date"
-  (multiple-value-bind (y m d) (date->ymd (ymd->date yy mm dd))
-    (and (= yy y) (= mm m) (= dd d))))
+  (cond ((not (and (integerp yy) (> yy -4713)
+		   (integerp mm) (<= 1 mm 12)
+		   (integerp dd) (<= 1 dd 31)))
+	 nil)
+	((and (or (= mm 4) (= mm 6) (= mm 9) (= mm 11)) (> dd 30))
+	 nil)
+	((and (leap-year-p yy) (= mm 2) (> dd 29))
+	 nil)
+	((and (not (leap-year-p yy)) (= mm 2) (> dd 28))
+	 nil)
+	(t t)))
 
 (defun valid-time-p (h m s)
   "Check that hour, minute and second are valid numbers"
@@ -114,8 +124,8 @@ If :want-time is NIL, returns year, month and day as integers."
 (defun easter-day (yy &optional (want-gregorian-date nil))
   "Returns the date for Easter Sunday in the given year.
 Accurate until approx. 4000 CE
-Returns a Julian date if want-gregorian-date is NIL. Otherwise,
-it returns year, month, day, hour, minute and second as 6 values"
+Returns a date if want-gregorian-date is NIL. Otherwise,
+it returns year, month, day as 3 values"
   (let* ((century (floor (/ yy 100)))
 	 (remain-19 (mod yy 19))
 	 (temp (+ (floor (* 1/2 (- century 15)))
@@ -152,22 +162,22 @@ it returns year, month, day, hour, minute and second as 6 values"
 
 (defun vernal-equinox (yy &optional (want-gregorian-date nil))
   "Return UTC date-time of the vernal (spring) equinox for the given year.
-Returns a Julian date if want-gregorian-date is NIL. Otherwise,
+Returns a date-time if want-gregorian-date is NIL. Otherwise,
 it returns year, month, day, hour, minute and second as 6 values"
   (calc-equinox-or-solstice-date 1 yy want-gregorian-date))
 (defun summer-solstice (yy &optional (want-gregorian-date nil))
   "Return UTC date-time of the summer solstice for the given year.
-Returns a Julian date if want-gregorian-date is NIL. Otherwise,
+Returns a date-time if want-gregorian-date is NIL. Otherwise,
 it returns year, month, day, hour, minute and second as 6 values"
   (calc-equinox-or-solstice-date 2 yy want-gregorian-date))
 (defun autumnal-equinox (yy &optional (want-gregorian-date nil))
   "Return UTC date-time of the autumnal equinox for the given year.
-Returns a Julian date if want-gregorian-date is NIL. Otherwise,
+Returns a date-time if want-gregorian-date is NIL. Otherwise,
 it returns year, month, day, hour, minute and second as 6 values"
   (calc-equinox-or-solstice-date 3 yy want-gregorian-date))
 (defun winter-solstice (yy &optional (want-gregorian-date nil))
   "Return UTC date-time of the winter solstice for the given year.
-Returns a Julian date if want-gregorian-date is NIL. Otherwise,
+Returns a date-time if want-gregorian-date is NIL. Otherwise,
 it returns year, month, day, hour, minute and second as 6 values"
   (calc-equinox-or-solstice-date 4 yy want-gregorian-date))
 

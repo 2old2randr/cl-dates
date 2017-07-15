@@ -203,4 +203,4 @@
       ;; The next one works coincidentally because Japanese uses a y/m/d format by default.
       ;; However, it demonstrates that as long as date components are present, the presence
       ;; of extraneous characters does not matter
-      (= (string->date "2004年8月9日") (ymd->date 2004 8 9)))))
+      (= (string->date "2004年8月9日 17:30:22" :reference-date dt) (ymd->date 2004 8 9 17 30 22)))))
