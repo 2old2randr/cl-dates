@@ -24,11 +24,51 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-;;;
-;;; holidays.lisp - Functions to generate holidays in various countries
-;;; for any given year.
-;;;
+;;;; Holidays.lisp - Functions to generate holidays in various countries
+;;;; for any given year. Only centres which either have fixed holidays or
+;;;; movable holidays that depend only on day of the week, easter or the
+;;;; equinoxes are implemented (Oz, Japan, Germany, EUR, Switz, UK, USA).
+;;;;
+;;;; TODO - Add lunar calendar based holiday computations.
+
 (in-package :cl-dates)
+
+(defun aus-holidays (year &key (which :settlement))
+  "Australian settlement holidays"
+  (declare (ignore which))
+  (labels ((move-sat-sun-to-mon (date)
+	     (let ((dow (day-of-week date)))
+	       (cond ((eq dow :saturday) (+ date 2))
+		     ((eq dow :sunday) (1+ date))
+		     (t date)))))
+    (let (hols)
+      ;; New year's day - move to Monday if on weekend
+      (push (move-sat-sun-to-mon (ymd->date year 1 1)) hols)
+      ;; Australia day
+      (push (move-sat-sun-to-mon (ymd->date year 1 26)) hols)
+      (let ((easter (easter-day year)))
+	(push (- easter 2) hols)		; Good Friday
+	(push (+ easter 1) hols))		; Easter Monday
+      ;; ANZAC day
+      (push (move-sat-sun-to-mon (ymd->date year 4 25)) hols)
+      ;; Queen's birthday - 2nd Mon of June
+      (push (nth-day-of-week (ymd->date year 6 1) :monday 2) hols)
+      ;; Bank holiday - first Mon in Aug
+      (push (nth-day-of-week (ymd->date year 8 1) :monday 1) hols)
+      ;; Labour day - first Mon in Oct
+      (push (nth-day-of-week (ymd->date year 10 1) :monday 1) hols)
+      ;; Christmas and boxing day - move to Mon/Tue if on weekend
+      (let* ((xmas (ymd->date year 12 25))
+	     (dow (day-of-week xmas)))
+	(cond ((eq dow :friday) (progn (push xmas hols)
+				       (push (+ xmas 3) hols)))
+	      ((eq dow :saturday) (progn (push (+ xmas 2) hols)
+					 (push (+ xmas 3) hols)))
+	      ((eq dow :sunday) (progn (push (+ xmas 1) hols)
+				       (push (+ xmas 2) hols)))
+	      (t (progn (push xmas hols)
+			(push (+ xmas 1) hols)))))
+      (remove-duplicates (sort (mapcar #'jday-number hols) #'<)))))
 
 (defun german-holidays (year &key (which :settlement))
   "German holidays for settlement, Eurex and Euwax"
@@ -53,7 +93,7 @@
     (remove-duplicates (sort (mapcar #'jday-number hols) #'<))))
 
 (defun japan-holidays (year &key (which :settlement))
-  "Japan holidays for settlement (which = nil returns only national holidays)"
+  "Japan holidays for settlement (If which is NIL, bank holidays that are not national holidays are excluded)"
   (labels ((move-sun-next-bday (date-list)
 	     (let ((moved-dates nil)
 		   (dates (mapcar #'jday-number date-list)))
