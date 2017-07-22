@@ -26,23 +26,6 @@
 
 (in-package :cl-dates-test)
 
-(deftest holiday-tests ()
-  (combine-results
-   (loop for test-case in +holiday-tests+
-	 collect (destructuring-bind (centre year-range dates) test-case
-		   (setf dates (mapcar #'jday-number (mapcar #'string->date dates)))
-		   (let* ((from-year (car year-range))
-			  (start-range (ymd->date from-year 1 1))
-			  (end-range (ymd->date (cadr year-range) 12 31))
-			  (cal (make-calendar centre :base-year from-year))
-			  (hols (sort (loop for dt being the
-					    hash-keys in (cl-dates::holidays cal)
-					    when (date<= start-range dt end-range)
-					      collect dt)
-				      #'date<)))
-		     (check
-		       (equal hols dates)))))))
-
 (defparameter +holiday-tests+
   '(;; US settlement holidays
     (:usd (2004 2005) ("1 January 2004" "19 January 2004" "16 February 2004" "31 May 2004"
@@ -96,3 +79,20 @@
 		       "28 August 2006" "25 December 2006" "26 December 2006"
 		       "1 January 2007" "6 April 2007" "9 April 2007" "7 May 2007" "28 May 2007"
 		       "27 August 2007" "25 December 2007" "26 December 2007"))))
+
+(deftest holiday-tests ()
+  (combine-results
+   (loop for test-case in +holiday-tests+
+	 collect (destructuring-bind (centre year-range dates) test-case
+		   (setf dates (mapcar #'jday-number (mapcar #'string->date dates)))
+		   (let* ((from-year (car year-range))
+			  (start-range (ymd->date from-year 1 1))
+			  (end-range (ymd->date (cadr year-range) 12 31))
+			  (cal (make-calendar centre :base-year from-year))
+			  (hols (sort (loop for dt being the
+					    hash-keys in (cl-dates::holidays cal)
+					    when (date<= start-range dt end-range)
+					      collect dt)
+				      #'date<)))
+		     (check
+		       (equal hols dates)))))))
