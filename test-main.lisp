@@ -82,7 +82,8 @@
 		  (date-arith-360)
 		  (date-arith-act-act)
 		  (print-fns)
-		  (parse-dates))))
+		  (parse-dates)
+		  (holiday-tests))))
     (unless (zerop *total-tests*)
       (format t "~d tests executed - ~d passed (~,2f%)~%"
 	      *total-tests* (- *total-tests* *failed-tests*)
