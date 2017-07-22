@@ -231,7 +231,7 @@ are also generated so that the range of years is continuous"
 
 (defmethod holiday-p (date (cal calendar-union))
   "True if date is a holiday in any contained calendar"
-  (some #'identity (lambda (cal) (holiday-p date cal)) (calendars cal)))
+  (some #'identity (mapcar (lambda (cal) (holiday-p date cal)) (calendars cal))))
 
 (defmethod business-day-p (date (cal calendar))
   "True if date is not a holiday or weekend in the given calendar"
