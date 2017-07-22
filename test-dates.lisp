@@ -60,6 +60,18 @@
     ;; any number <= 1 should return 1st tuesday
     (= (nth-day-of-week (ymd->date 2017 2 5) :tuesday -7) (ymd->date 2017 2 7))
 
+    (= (first-of-next-month (ymd->date 2017 6 18)) (ymd->date 2017 7 1))
+    (= (first-of-next-month (ymd->date 2016 12 18)) (ymd->date 2017 1 1))
+    
+    (= (last-day-of-month (ymd->date 2016 12 18)) (ymd->date 2016 12 31))
+    (= (last-day-of-month (ymd->date 2016 2 1)) (ymd->date 2016 2 29))
+    (= (last-day-of-month (ymd->date 2017 2 1)) (ymd->date 2017 2 28))
+
+    (= (last-day-of-prev-month (ymd->date 2016 12 18)) (ymd->date 2016 11 30))
+    (= (last-day-of-prev-month (ymd->date 2017 1 1)) (ymd->date 2016 12 31))
+    (= (last-day-of-prev-month (ymd->date 2016 3 1)) (ymd->date 2016 2 29))
+    (= (last-day-of-prev-month (ymd->date 2017 3 1)) (ymd->date 2017 2 28))
+
     (date= (ymd->date 2007 2 3 10 35 42) (ymd->date 2007 2 3 11 30 20) (ymd->date 2007 2 3 12 45 12))
     (date/= (ymd->date 2007 2 4) (ymd->date 2007 2 3) (ymd->date 2007 2 3))
     (date< (ymd->date 2007 2 3 10 35 42) (ymd->date 2007 2 4 11 30 20) (ymd->date 2007 2 5 12 45 12))
@@ -176,6 +188,7 @@
 	    ("2007-09-30" "2008-09-30" 1           1           1           1.016666667)
 	    ("2007-01-15" "2007-01-31" 0.044444444 0.041666667 0.041666667 0.044444444)
 	    ("2007-01-31" "2007-02-28" 0.077777778 0.077777778 0.083333333 0.077777778)
+	    ("2007-02-28" "2007-03-31" 0.091666667 0.088888889 0.083333333 0.086111111)
 	    ("2006-08-31" "2007-02-28" 0.494444444 0.494444444 0.5         0.502777778)
 	    ("2007-02-28" "2007-08-31" 0.508333333 0.505555556 0.5         0.511111111)
 	    ("2007-02-14" "2007-02-28" 0.038888889 0.038888889 0.044444444 0.038888889)
