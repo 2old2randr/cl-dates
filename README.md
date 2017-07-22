@@ -42,6 +42,11 @@ in this case) and ignore the time.
       convention (such as *Actual/365* or *30/360*) is taken into
       account so that the result can be used to accurately compute
       interest on a bond or loan.
+	  
+- *Holiday calendars*: Functions to automatically generate holidays
+  for certain currencies / trading centres are provided. Dates can
+  be checked against these calendars to see if they are business days
+  or not.
 
 - *Miscellaneous* date manipulation functions are provided to compute
   the last day of a month, last day of the previous month, Nth day of
@@ -69,5 +74,5 @@ OS X. The code is portable and should run on any Common Lisp environment.
 
 ## To Do
 
-Date arithmetic functions that use holidays and weekends for
-adjustments are not yet included.
+Date arithmetic functions that use holiday calendars to advance dates
+are not yet included.
