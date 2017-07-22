@@ -71,4 +71,12 @@
    :add-years		    ; convenience function
    :diff-days		    ; absolute number of days between two dates
    :diff-years		    ; years between dates using day count conventions
+   ;; Holiday calendars and weekends
+   :make-calendar
+   :known-centres
+   :get-holidays-for-centre
+   :weekend-p
+   :weekday-p
+   :holiday-p
+   :business-day-p
    ))
