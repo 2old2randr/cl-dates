@@ -32,7 +32,7 @@
 (in-package :cl-dates)
 
 (defsystem :cl-dates
-  :version "0.7"
+  :version "0.9"
   :description "Date-time library for Common Lisp"
   :author "Sudhir Shenoy"
   :license "BSD"
