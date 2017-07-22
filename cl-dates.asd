@@ -43,7 +43,9 @@
                (:file "dates")
                (:file "parse-date")
 	       (:file "print-date")
-	       (:file "date-arith")))
+	       (:file "date-arith")
+	       (:file "holidays")
+	       (:file "calendar")))
 
 (defsystem :cl-dates-test
   :description "Date-time library tests"
@@ -53,7 +55,8 @@
   :serial t
   :components ((:file "test-main")
 	       (:file "test-dates")
-	       (:file "test-parse-date")))
+	       (:file "test-parse-date")
+	       (:file "test-hols")))
 
 (defmethod perform ((o test-op) (c (eql (find-system :cl-dates))))
   (operate 'load-op :cl-dates-test)
