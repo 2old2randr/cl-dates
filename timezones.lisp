@@ -24,6 +24,8 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; TimeZones.lisp - Contains a table mapping timezones to their offsets from GMT
+
 (in-package :cl-dates)
 
 ;; hash table containing mappings from time zone abbreviation to GMT offset

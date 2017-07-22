@@ -24,17 +24,17 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-;;
-;; Contains a string to date-time converter that accurately parses most common
-;; ways of writing dates. See test-parse-dates.lisp for examples.
-;;
-;; Only the string->date function is exported from this file - all other functions
-;; are simply supporting functions for string->date and are not meant to be used
-;; elsewhere.
-;;
-;; The code is largely based on the Python dateutils library but there are some
-;; differences and optimizations
-;;
+;;;; Parse-Date.lisp - Contains a string to date-time converter that accurately
+;;;; parses most common ways of writing dates.
+;;;;
+;;;; See test-parse-dates.lisp for examples.
+;;;;
+;;;; Only the string->date function is exported from this file - all other functions
+;;;; are simply supporting functions for string->date and are not meant to be used
+;;;; elsewhere.
+;;;;
+;;;; The code is largely based on the Python dateutils library but there are some
+;;;; differences and optimizations
 
 (in-package :cl-dates)
 
@@ -64,7 +64,7 @@
 		     ;; separate "23.jun.2017" => "23" "." "jun" "." "2017"
 		     ;; any trailing period will be dropped
 		     (setf token (nreverse token))
-		     (loop for tk on (split-list #'(lambda(x) (char= x #\.)) token)
+		     (loop for tk on (split-list (lambda(x) (char= x #\.)) token)
 			   do (progn
 				(push (coerce (car tk) 'string) token-list)
 				(unless (null (cdr tk))
@@ -186,18 +186,18 @@
 	    (t (multiple-value-bind (yy mm) (assign-yy-mm list precedence)
 		 (values yy mm nil))))
       (let (tmp)
-	(cond ((every #'(lambda(x) (<= x 12)) list)
+	(cond ((every (lambda(x) (<= x 12)) list)
 	       ;; 01/02/03
 	       (cond ((eq precedence :mdy) (values (third list) (first list) (second list)))
 		     ((eq precedence :dmy) (values (third list) (second list) (first list)))
 		     (t (values (first list) (second list) (third list)))))
-	      ((setf tmp (find-if #'(lambda(x) (> x 31)) list))
+	      ((setf tmp (find-if (lambda(x) (> x 31)) list))
 	       ;; 12/5/55
 	       (setf list (remove tmp list :count 1))
 	       (multiple-value-bind (mm dd) (assign-mm-dd list precedence)
 		 (values tmp mm dd)))
-	      ((= 1 (count-if #'(lambda(x) (<= x 12)) list))
-	       (setf tmp (find-if #'(lambda(x) (<= x 12)) list)
+	      ((= 1 (count-if (lambda(x) (<= x 12)) list))
+	       (setf tmp (find-if (lambda(x) (<= x 12)) list)
 		     list (remove tmp list :count 1))
 	       (multiple-value-bind (yy dd) (assign-yy-dd list precedence)
 		 (values yy tmp dd)))

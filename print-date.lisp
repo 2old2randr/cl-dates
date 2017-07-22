@@ -24,6 +24,9 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; Print-Date.lisp - functions to convert a date-time into various string
+;;;; formats
+
 (in-package :cl-dates)
 
 (defun date->string (date &key (format :human) zone)

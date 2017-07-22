@@ -24,6 +24,8 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; Packages.lisp - defines the cl-dates package and all exported symbols
+
 (in-package :cl-user)
 
 (defpackage :cl-dates

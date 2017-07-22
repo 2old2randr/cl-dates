@@ -24,6 +24,12 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; Date-Arith.lisp - Functions to compare dates, add days or months to dates
+;;;; and calculate the number of days or years between two dates.
+;;;; The day convention may be specified when calculating date differences or
+;;;; advancing dates by months - different results may be returned depending
+;;;; on the convention used.
+
 (in-package :cl-dates)
 
 ;; Date comparisons - strip off time component

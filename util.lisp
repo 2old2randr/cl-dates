@@ -24,6 +24,10 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; Util.lisp - small utility functions used across the cl-dates package.
+;;;; E.g., functions to convert symbols for day of week, date convention,
+;;;; etc to strings for printing
+
 (in-package :cl-dates)
 
 (defun parse-number (string)

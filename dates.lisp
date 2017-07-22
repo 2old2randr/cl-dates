@@ -24,6 +24,10 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;;; Dates.lisp - basic date routines to convert from Gregorian dates to Julian dates
+;;;; and vice versa. Also contains functions to calculate astronomical dates such as
+;;;; Easter, the equinozes, etc.
+
 (in-package :cl-dates)
 
 (defun jday-number (date)
