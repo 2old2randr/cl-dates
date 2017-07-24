@@ -79,6 +79,28 @@ weekday in the month."
 		    (return dt)
 		    (setf dt next-dt)))))))))
 
+(defun date+ (date days)
+  "Advance date by given number of days"
+  (+ date days))
+
+(defun date- (date days)
+  "Retreat date by given number of days"
+  (- date days))
+
+(defun day-number (date)
+  "Return the day number for the year"
+  (let ((year (date->ymd date)))
+    (1+ (truncate (date- date (ymd->date year 1 1))))))
+
+(defun week-number (date)
+  "Return the week of year in which date falls.
+If Jan 1 is not a Monday, the 1st Monday of January is week 2 by definition"
+  (let* ((year (date->ymd date))
+	 (first-monday (nth-day-of-week (ymd->date year 1 1) :monday 1)))
+    (if (date< date first-monday)
+	1
+	(+ 2 (truncate (/ (date- date first-monday) 7))))))
+
 (defun first-of-next-month (date)
   "Returns the 1st of the following month"
   (multiple-value-bind (yy mm dd) (date->ymd date)
@@ -96,14 +118,6 @@ weekday in the month."
   (multiple-value-bind (yy mm dd) (date->ymd date)
     (declare (ignore dd))
     (1- (ymd->date yy mm 1))))
-
-(defun date+ (date days)
-  "Advance date by given number of days"
-  (+ date days))
-
-(defun date- (date days)
-  "Retreat date by given number of days"
-  (- date days))
 
 (defun add-years (date years &key eom-rule)
   "Add number of years to date (subtract if negative) - see add-months"
