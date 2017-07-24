@@ -45,7 +45,8 @@
 	       (:file "print-date")
 	       (:file "date-arith")
 	       (:file "holidays")
-	       (:file "calendar")))
+	       (:file "calendar")
+	       (:file "bus-date-arith")))
 
 (defsystem :cl-dates-test
   :description "Date-time library tests"

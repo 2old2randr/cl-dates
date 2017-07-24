@@ -59,6 +59,8 @@
    :jday-number				; Julian day number
    :day-of-week				; Day of week for date
    :leap-year-p
+   :day-number				; day number in year
+   :week-number				; week of year
    ;; Comparisons
    :date= :date/=
    :date< :date<=
@@ -74,11 +76,20 @@
    :diff-days		    ; absolute number of days between two dates
    :diff-years		    ; years between dates using day count conventions
    ;; Holiday calendars and weekends
-   :make-calendar
-   :known-centres
-   :get-holidays-for-centre
+   :make-calendar			; create new holiday calendar
+   :known-centres			; centres for which holiday generators exist
+   :get-holidays-for-centre		; list of holidays for a centre+year
    :weekend-p
    :weekday-p
    :holiday-p
-   :business-day-p
+   :business-day-p			; not a holiday or weekend
+   ;; Business date arithmetic
+   :workday-number			; nth business day of year
+   :next-workday			; next business day after date
+   :prev-workday			; business day before date
+   :diff-workdays			; number of business days between dates
+   :first-workday-of-month
+   :last-workday-of-month
+   :last-workday-of-prev-month
+   :adjust-date				; move date if not a business day
    ))
