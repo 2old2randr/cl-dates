@@ -246,3 +246,96 @@
 		       (= (diff-years d1 d2 :act-act-afb) afb)
 		       (= (diff-years d1 d2 :act-act) isda)
 		       (= (diff-years d1 d2 :act-act-isma :frequency freq :is-last-coupon last-cpn) isma)))))))
+
+(deftest bus-date-arith ()
+  (let ((cal (make-calendar :jpy :base-year 2017)))
+    (check
+     (= 245 (workday-number (ymd->date 2016 12 31) cal))
+     (= 20 (workday-number (ymd->date 2017 2 1) cal))
+     (= 247 (workday-number (ymd->date 2017 12 31) cal))
+
+     (date= (ymd->date 2017 1 4) (next-workday (ymd->date 2016 12 31) cal))
+     (date= (ymd->date 2016 5 2) (next-workday (ymd->date 2016 4 28) cal))
+     (date= (ymd->date 2017 5 8) (next-workday (ymd->date 2017 5 2) cal))
+
+     (date= (ymd->date 2016 12 30) (prev-workday (ymd->date 2017 1 4) cal))
+     (date= (ymd->date 2017 4 28) (prev-workday (ymd->date 2017 5 1) cal))
+     (date= (ymd->date 2017 5 2) (prev-workday (ymd->date 2017 5 8) cal))
+
+     (date= (ymd->date 2018 1 4) (add-workdays (ymd->date 2017 1 1) cal 248))
+     (date= (ymd->date 2017 2 1) (add-workdays (ymd->date 2017 1 1) cal 20))
+
+     (= 20 (diff-workdays (ymd->date 2017 1 1) (ymd->date 2017 2 1) cal))
+     (= 247 (diff-workdays (ymd->date 2017 1 1) (ymd->date 2017 12 31) cal))
+     (= 247 (diff-workdays (ymd->date 2018 1 4) (ymd->date 2017 1 4) cal))
+
+     (date= (ymd->date 2016 5 2) (first-workday-of-month (ymd->date 2016 5 10) cal))
+     (date= (ymd->date 2017 4 28) (last-workday-of-month (ymd->date 2017 4 1) cal))
+     (date= (ymd->date 2017 4 28) (last-workday-of-prev-month (ymd->date 2017 5 10) cal))
+
+     (date= (ymd->date 2016 5 2) (adjust-date (ymd->date 2016 4 30) cal :following))
+     (date= (ymd->date 2016 4 28) (adjust-date (ymd->date 2016 4 30) cal :modified-following))
+     (date= (ymd->date 2016 4 28) (adjust-date (ymd->date 2016 4 30 1) cal :preceding)))))
+
+(deftest schedule-generation ()
+  (let ((target-cal (make-calendar :target :base-year 2002))
+	(japan-cal (make-calendar :japan :base-year 2009))
+	(bond-cal (make-calendar :us-bond :base-year 1996)))
+    (check
+     ;; Adjusted maturity date with month-end roll
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 2009 9 30) (ymd->date 2012 6 15)
+						      6 japan-cal :rule :normal-front
+								  :roll-convention :following
+								  :maturity-roll :following
+								  :eom-rule :eom-normal))
+	    (list "2009-09-30" "2010-03-31" "2010-09-30" "2011-03-31" "2011-09-30"
+		  "2012-03-30" "2012-06-29"))
+     ;; same as above with unadjusted maturity
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 2009 9 30) (ymd->date 2012 6 15)
+						      6 japan-cal :rule :normal-front
+								  :roll-convention :following
+								  :maturity-roll nil
+								  :eom-rule :eom-normal))
+	    (list "2009-09-30" "2010-03-31" "2010-09-30" "2011-03-31" "2011-09-30"
+		  "2012-03-30" "2012-06-15"))
+     ;; Coupon date of 2015/3/31 (after EOM adjustment) is dropped because it is beyond maturity
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 2013 3 28) (ymd->date 2015 3 30)
+						      12 target-cal :rule :normal-front
+								    :roll-convention nil
+								    :maturity-roll nil
+								    :eom-rule :eom-normal))
+	    (list "2013-03-28" "2014-03-31" "2015-03-30"))
+     ;; Coupon date of 2015/3/31 (after EOM adjustment) is dropped because it is equal to maturity
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 2013 3 28) (ymd->date 2015 3 31)
+						      12 target-cal :rule :normal-front
+								    :roll-convention nil
+								    :maturity-roll nil
+								    :eom-rule :eom-normal))
+	    (list "2013-03-28" "2014-03-31" "2015-03-31"))
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 1996 8 31) (ymd->date 1997 9 15)
+						      6 bond-cal :rule :normal-front
+								 :roll-convention nil
+								 :maturity-roll nil
+								 :eom-rule :eom-normal))
+	    (list "1996-08-31" "1997-02-28" "1997-08-31" "1997-09-15"))
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 1996 8 22) (ymd->date 1997 8 31)
+						      6 bond-cal :rule :normal-back
+								 :roll-convention nil
+								 :maturity-roll nil
+								 :eom-rule :eom-normal))
+	    (list "1996-08-22" "1996-08-31" "1997-02-28" "1997-08-31"))
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 1996 8 22) (ymd->date 1997 8 31)
+						      6 bond-cal :rule :normal-back
+								 :roll-convention :following
+								 :maturity-roll :following
+								 :eom-rule :eom-normal))
+	    (list "1996-08-22" "1996-08-30" "1997-02-28" "1997-08-29"))
+     (equal (mapcar #'date->string (generate-schedule (ymd->date 2016 12 12) (ymd->date 2021 12 12)
+						      3 japan-cal :rule :cds-dates
+								  :roll-convention :modified-following
+								  :maturity-roll nil
+								  :eom-rule nil))
+	    (list "2016-09-20" "2016-12-20" "2017-03-21" "2017-06-20" "2017-09-20" "2017-12-20"
+		  "2018-03-20" "2018-06-20" "2018-09-20" "2018-12-20" "2019-03-20" "2019-06-20"
+		  "2019-09-20" "2019-12-20" "2020-03-23" "2020-06-22" "2020-09-23" "2020-12-21"
+		  "2021-03-22" "2021-06-21" "2021-09-21" "2021-12-20")))))

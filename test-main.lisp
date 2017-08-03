@@ -83,7 +83,9 @@
 		  (date-arith-act-act)
 		  (print-fns)
 		  (parse-dates)
-		  (holiday-tests))))
+		  (holiday-tests)
+		  (bus-date-arith)
+		  (schedule-generation))))
     (unless (zerop *total-tests*)
       (format t "~d tests executed - ~d passed (~,2f%)~%"
 	      *total-tests* (- *total-tests* *failed-tests*)
