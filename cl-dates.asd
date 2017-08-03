@@ -53,11 +53,12 @@
   :author "Sudhir Shenoy"
   :license "BSD"
   :depends-on (:cl-dates)
-  :serial t
-  :components ((:file "test-main")
-	       (:file "test-dates")
-	       (:file "test-parse-date")
-	       (:file "test-hols")))
+  :components ((:module "test"
+		:serial t
+		:components ((:file "test-main")
+			     (:file "test-dates")
+			     (:file "test-parse-date")
+			     (:file "test-hols")))))
 
 (defmethod perform ((o test-op) (c (eql (find-system :cl-dates))))
   (operate 'load-op :cl-dates-test)
