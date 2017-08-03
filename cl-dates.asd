@@ -32,8 +32,8 @@
 (in-package :cl-dates)
 
 (defsystem :cl-dates
-  :version "0.9"
-  :description "Date-time library for Common Lisp"
+  :version "1.0"
+  :description "Date arithmetic library for Common Lisp"
   :author "Sudhir Shenoy"
   :license "BSD"
   :serial t
@@ -49,7 +49,7 @@
 	       (:file "bus-date-arith")))
 
 (defsystem :cl-dates-test
-  :description "Date-time library tests"
+  :description "Date arithmetic library tests"
   :author "Sudhir Shenoy"
   :license "BSD"
   :depends-on (:cl-dates)
