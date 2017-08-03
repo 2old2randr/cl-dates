@@ -47,7 +47,7 @@ in this case) and ignore the time.
       convention (such as *Actual/365* or *30/360*) is taken into
       account so that the result can be used to accurately compute
       interest on a bond or loan.
-    - Similar functions (e.g., **add-workdays**, **prev-workday**,
+    - Other functions (e.g., **add-workdays**, **prev-workday**,
       **diff-workdays**) provide similar functionality using holiday
       calendars.
     - A function **generate-schedule** is provided to generate a
@@ -72,8 +72,8 @@ party library dependencies.
 Test cases are in _test-*.lisp_. To run, load the *cl-dates-test* package
 and run **cl-dates-test:run-all-tests**.
 
-The library has been tested with CCL on Mac OS X and Windows and SBCL on Mac
-OS X. The code is portable and should run on any Common Lisp environment. 
+The library has been tested with Clozure CL (on Mac OS X and Windows) and SBCL (on Mac
+OS X only). The code is portable and should run on any Common Lisp environment. 
 
 ## License
 
