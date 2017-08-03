@@ -59,6 +59,7 @@
    :jday-number				; Julian day number
    :day-of-week				; Day of week for date
    :leap-year-p
+   :imm-date-p
    :day-number				; day number in year
    :week-number				; week of year
    ;; Comparisons
@@ -87,9 +88,11 @@
    :workday-number			; nth business day of year
    :next-workday			; next business day after date
    :prev-workday			; business day before date
+   :add-workdays			; move by 'n' business days
    :diff-workdays			; number of business days between dates
    :first-workday-of-month
    :last-workday-of-month
    :last-workday-of-prev-month
    :adjust-date				; move date if not a business day
+   :generate-schedule
    ))
