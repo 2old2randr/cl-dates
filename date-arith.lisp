@@ -79,6 +79,13 @@ weekday in the month."
 		    (return dt)
 		    (setf dt next-dt)))))))))
 
+(defun imm-date-p (date)
+  "Returns true if date is the 3rd Wednesday of the month"
+  (and (eq (day-of-week date) :wednesday)
+       (multiple-value-bind (yy mm dd) (date->ymd date)
+	 (declare (ignore yy mm))
+	 (date<= 15 dd 21))))
+
 (defun date+ (date days)
   "Advance date by given number of days"
   (+ date days))
