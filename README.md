@@ -32,6 +32,11 @@ in this case) and ignore the time.
   given year (**easter-day**, **vernal-equinox**,
   **autumnal-equinox**, **summer-solstice**, and **winter-solstice**).
 
+- *Holiday calendars*: Functions to automatically generate holidays
+  for certain currencies / trading centres are provided. Dates can
+  be checked against these calendars to see if they are business days
+  or not.
+
 - *Date arithmetic*
     - Functions are provided to add or subtract days or months from a
       date (**date+**, **date-**, **add-months**,
@@ -42,12 +47,14 @@ in this case) and ignore the time.
       convention (such as *Actual/365* or *30/360*) is taken into
       account so that the result can be used to accurately compute
       interest on a bond or loan.
-	  
-- *Holiday calendars*: Functions to automatically generate holidays
-  for certain currencies / trading centres are provided. Dates can
-  be checked against these calendars to see if they are business days
-  or not.
-
+    - Similar functions (e.g., **add-workdays**, **prev-workday**,
+      **diff-workdays**) provide similar functionality using holiday
+      calendars.
+    - A function **generate-schedule** is provided to generate a
+      schedule of dates (e.g., for a bond, loan, credit default swap).
+      This uses date roll conventions and holiday calendars to determine
+      each payment date.
+      
 - *Miscellaneous* date manipulation functions are provided to compute
   the last day of a month, last day of the previous month, Nth day of
   week in a month (e.g., 3rd Wednesday), etc.
@@ -72,7 +79,6 @@ OS X. The code is portable and should run on any Common Lisp environment.
 
 *cl-dates* is licensed under the 2-clause BSD license.
 
-## To Do
+## TO DO
 
-Date arithmetic functions that use holiday calendars to advance dates
-are not yet included.
+Detailed documentation is yet to be written
